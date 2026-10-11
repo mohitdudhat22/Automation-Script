@@ -1,0 +1,42 @@
+name: Attach Resume (Manual, Never Submit)
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_url:
+        description: Full job application URL
+        required: true
+        type: string
+      resume_url:
+        description: Public Google Drive PDF URL
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  attach:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: playwright-resume-upload
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium
+      - name: Attach and verify only (never submit)
+        env:
+          TARGET_JOB_URL: ${{ inputs.target_url }}
+          RESUME_URL: ${{ inputs.resume_url }}
+        run: npm run attach-resume
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: resume-attachment-screenshot
+          path: playwright-resume-upload/attachment-result.png
+          retention-days: 3

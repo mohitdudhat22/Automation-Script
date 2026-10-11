@@ -1,0 +1,27 @@
+name: Playwright Resume Upload CI
+
+on:
+  push:
+    branches: [main, 'feat/playwright-resume-upload']
+    paths: ['playwright-resume-upload/**', '.github/workflows/playwright-resume-upload-ci.yml']
+  pull_request:
+    paths: ['playwright-resume-upload/**', '.github/workflows/playwright-resume-upload-ci.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: playwright-resume-upload
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium
+      - run: npm test

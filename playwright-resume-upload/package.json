@@ -1,0 +1,7 @@
+{
+  "name": "playwright-resume-upload",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": { "test": "playwright test", "attach-resume": "node scripts/attach-resume.mjs" },
+  "devDependencies": { "@playwright/test": "^1.55.0" }
+}
